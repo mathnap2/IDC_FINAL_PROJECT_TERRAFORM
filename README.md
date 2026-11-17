@@ -29,7 +29,8 @@ El sufijo aleatorio existe porque los nombres de Web Apps y PostgreSQL son únic
 | `main.tf` | Nombres/URLs calculados, Resource Group y App Service Plan |
 | `webapps.tf` | Las 4 Web Apps con sus variables de entorno |
 | `database.tf` | PostgreSQL, regla de firewall, bases y cadenas de conexión |
-| `outputs.tf` | URLs, nombres de Web Apps y cadenas de conexión (sensibles) |
+| `identity.tf` | Identidad de GitHub Actions (OIDC) y su permiso sobre el resource group |
+| `outputs.tf` | URLs, nombres de Web Apps, valores para GitHub Secrets y cadenas de conexión (sensibles) |
 
 ## Variables de entorno que reciben las apps
 
@@ -51,3 +52,40 @@ terraform output urls
 
 La imagen de cada Web App la actualiza el pipeline de CD; Terraform la ignora (`ignore_changes`) para no regresarla.
 El estado (`terraform.tfstate`) es local y no se sube al repo porque contiene contraseñas.
+
+## Despliegue desde GitHub Actions (service connection)
+
+`identity.tf` crea la aplicación `sp-cuentasclaras-github` con **credenciales federadas (OIDC)**: GitHub presenta un
+token firmado que dice de qué repo y ambiente viene, y Azure lo acepta sin contraseña. Solo se aceptan workflows de
+`IDC_FINAL_PROJECT` e `IDC_FINAL_PROJECT_FRONTEND` que corran en el environment `dev` o `production`, o en un push a
+`develop` o `main`. Su permiso es **Website Contributor** sobre `rg-cuentasclaras`: puede cambiar la imagen y
+reiniciar las Web Apps, nada más.
+
+### Configuración en cada repo (backend y frontend)
+
+1. **Settings → Secrets and variables → Actions**, con los valores de `terraform output github_secrets`:
+   `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (más `DOCKERHUB_USERNAME` y `DOCKERHUB_TOKEN`).
+2. **Settings → Environments**: crear `dev` y `production`. En `production` activar
+   *Required reviewers*; esa es la aprobación manual antes de producción.
+
+### Ejemplo de job
+
+```yaml
+deploy-dev:
+  needs: build
+  runs-on: ubuntu-latest
+  environment: dev            # en prod: environment: production (pide aprobación)
+  permissions:
+    id-token: write           # necesario para OIDC
+    contents: read
+  steps:
+    - uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - uses: azure/webapps-deploy@v3
+      with:
+        app-name: app-cc-api-dev-4yzr            # ver terraform output webapp_names
+        images: docker.io/mathnap2/cuentas-claras:sha-${{ github.sha }}
+```
