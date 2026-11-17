@@ -33,6 +33,12 @@ variable "frontend_image" {
   default     = "mathnap2/cuentas-claras-front"
 }
 
+variable "github_repos" {
+  description = "Repos (owner/nombre) cuyos workflows pueden desplegar en Azure"
+  type        = list(string)
+  default     = ["mathnap2/IDC_FINAL_PROJECT", "mathnap2/IDC_FINAL_PROJECT_FRONTEND"]
+}
+
 variable "db_admin_user" {
   description = "Usuario administrador de PostgreSQL"
   type        = string
