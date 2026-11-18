@@ -1,0 +1,7 @@
+# Copiar a terraform.tfvars (no se sube al repo) y llenar.
+subscription_id = "00000000-0000-0000-0000-000000000000"
+
+# Opcionales
+# location            = "centralus"
+# sentry_dsn_backend  = "https://...@o0.ingest.us.sentry.io/0"
+# sentry_dsn_frontend = "https://...@o0.ingest.us.sentry.io/0"
