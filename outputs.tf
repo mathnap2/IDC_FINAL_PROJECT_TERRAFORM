@@ -12,6 +12,15 @@ output "webapp_names" {
   value       = local.nombres
 }
 
+output "github_secrets" {
+  description = "Valores para los secrets de GitHub (no son contraseñas: con OIDC no hay secreto)"
+  value = {
+    AZURE_CLIENT_ID       = azuread_application.github.client_id
+    AZURE_TENANT_ID       = data.azurerm_client_config.actual.tenant_id
+    AZURE_SUBSCRIPTION_ID = data.azurerm_client_config.actual.subscription_id
+  }
+}
+
 output "postgres_fqdn" {
   value = azurerm_postgresql_flexible_server.psql.fqdn
 }
