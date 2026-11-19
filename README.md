@@ -2,6 +2,11 @@
 
 Crea en Azure todo lo que necesitan el backend y el frontend en sus ambientes **dev** y **prod**.
 
+> 📋 **Tablero del proyecto:** [Cuentas Claras](https://github.com/users/angelcortes1705/projects/3)
+> · Repos: [backend](https://github.com/mathnap2/IDC_FINAL_PROJECT)
+> · [frontend](https://github.com/mathnap2/IDC_FINAL_PROJECT_FRONTEND)
+> · [infraestructura](https://github.com/mathnap2/IDC_FINAL_PROJECT_TERRAFORM)
+
 ## Recursos
 
 | Recurso | Nombre | Para qué |
