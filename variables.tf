@@ -34,9 +34,16 @@ variable "frontend_image" {
 }
 
 variable "github_repos" {
-  description = "Repos (owner/nombre) cuyos workflows pueden desplegar en Azure"
-  type        = list(string)
-  default     = ["mathnap2/IDC_FINAL_PROJECT", "mathnap2/IDC_FINAL_PROJECT_FRONTEND"]
+  description = <<-EOT
+    Repos cuyos workflows pueden desplegar en Azure: nombre corto => identificador que GitHub manda en el
+    token OIDC. GitHub incluye los IDs numéricos del dueño y del repo (owner@owner_id/repo@repo_id);
+    se obtienen con: gh api repos/<owner>/<repo> --jq '"\(.owner.login)@\(.owner.id)/\(.name)@\(.id)"'
+  EOT
+  type        = map(string)
+  default = {
+    "idc-final-project"          = "mathnap2@143150021/IDC_FINAL_PROJECT@1456087370"
+    "idc-final-project-frontend" = "mathnap2@143150021/IDC_FINAL_PROJECT_FRONTEND@1460719379"
+  }
 }
 
 variable "db_admin_user" {

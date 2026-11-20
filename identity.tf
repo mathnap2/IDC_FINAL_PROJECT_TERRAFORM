@@ -18,9 +18,9 @@ locals {
   # Un workflow solo puede desplegar si corre en uno de estos contextos:
   # el environment "dev" o "production" del job, o un push a develop / main.
   sujetos_oidc = merge([
-    for repo in var.github_repos : {
+    for nombre, repo in var.github_repos : {
       for ctx in ["environment:dev", "environment:production", "ref:refs/heads/develop", "ref:refs/heads/main"] :
-      "${replace(lower(split("/", repo)[1]), "_", "-")}-${replace(replace(ctx, ":", "-"), "/", "-")}" => "repo:${repo}:${ctx}"
+      "${nombre}-${replace(replace(ctx, ":", "-"), "/", "-")}" => "repo:${repo}:${ctx}"
     }
   ]...)
 }
