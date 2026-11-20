@@ -40,8 +40,9 @@ resource "azurerm_postgresql_flexible_server_database" "db" {
 }
 
 locals {
+  # postgresql+psycopg2: SQLAlchemy 2.1 usa psycopg (v3) por defecto con "postgresql://", y la imagen trae psycopg2.
   database_url = {
     for amb in local.ambientes : amb =>
-    "postgresql://${var.db_admin_user}:${random_password.db.result}@${azurerm_postgresql_flexible_server.psql.fqdn}:5432/db_${amb}?sslmode=require"
+    "postgresql+psycopg2://${var.db_admin_user}:${random_password.db.result}@${azurerm_postgresql_flexible_server.psql.fqdn}:5432/db_${amb}?sslmode=require"
   }
 }

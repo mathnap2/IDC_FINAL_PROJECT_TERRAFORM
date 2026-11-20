@@ -27,20 +27,22 @@ resource "azurerm_linux_web_app" "api" {
   }
 
   app_settings = {
-    WEBSITES_PORT      = "8000"
-    FLASK_CONFIG       = "prod"
-    DATABASE_URL       = local.database_url[each.key]
-    SECRET_KEY         = random_password.secret_key[each.key].result
-    CORS_ORIGINS       = local.urls[each.key].web
-    SENTRY_DSN         = var.sentry_dsn_backend
-    SENTRY_ENVIRONMENT = each.key
+    # Contenedor sin almacenamiento compartido de App Service (lo pone Azure al configurar la imagen).
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    WEBSITES_PORT                       = "8000"
+    FLASK_CONFIG                        = "prod"
+    DATABASE_URL                        = local.database_url[each.key]
+    SECRET_KEY                          = random_password.secret_key[each.key].result
+    CORS_ORIGINS                        = local.urls[each.key].web
+    SENTRY_DSN                          = var.sentry_dsn_backend
+    SENTRY_ENVIRONMENT                  = each.key
   }
 
   logs {
     http_logs {
       file_system {
         retention_in_days = 3
-        retention_in_mb   = 35
+        retention_in_mb   = 100
       }
     }
   }
@@ -72,10 +74,12 @@ resource "azurerm_linux_web_app" "web" {
   }
 
   app_settings = {
-    WEBSITES_PORT      = "80"
-    API_URL            = local.urls[each.key].api
-    SENTRY_DSN         = var.sentry_dsn_frontend
-    SENTRY_ENVIRONMENT = each.key
+    # Contenedor sin almacenamiento compartido de App Service (lo pone Azure al configurar la imagen).
+    WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
+    WEBSITES_PORT                       = "80"
+    API_URL                             = local.urls[each.key].api
+    SENTRY_DSN                          = var.sentry_dsn_frontend
+    SENTRY_ENVIRONMENT                  = each.key
   }
 
   lifecycle {
