@@ -35,6 +35,7 @@ El sufijo aleatorio existe porque los nombres de Web Apps y PostgreSQL son únic
 | `webapps.tf` | Las 4 Web Apps con sus variables de entorno |
 | `database.tf` | PostgreSQL, regla de firewall, bases y cadenas de conexión |
 | `identity.tf` | Identidad de GitHub Actions (OIDC) y su permiso sobre el resource group |
+| `dashboard.tf` | Dashboard del portal con CPU y memoria del plan, requests, 4xx/5xx, tiempo de respuesta y memoria de las Web Apps |
 | `outputs.tf` | URLs, nombres de Web Apps, valores para GitHub Secrets y cadenas de conexión (sensibles) |
 
 ## Variables de entorno que reciben las apps

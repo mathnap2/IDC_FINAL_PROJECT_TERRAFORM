@@ -30,3 +30,8 @@ output "database_urls" {
   value       = local.database_url
   sensitive   = true
 }
+
+output "dashboard_url" {
+  description = "Dashboard de métricas en el portal de Azure"
+  value       = "https://portal.azure.com/#@${data.azurerm_client_config.actual.tenant_id}/dashboard/arm${azurerm_portal_dashboard.metricas.id}"
+}
